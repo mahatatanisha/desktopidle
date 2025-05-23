@@ -1,0 +1,23 @@
+{
+  "name": "desktopidle",
+  "version": "1.0.0",
+  "description": "ai assistant",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "electron ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mahatatanisha/desktopidle.git"
+  },
+  "author": "tanisha",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mahatatanisha/desktopidle/issues"
+  },
+  "homepage": "https://github.com/mahatatanisha/desktopidle#readme",
+  "devDependencies": {
+    "electron": "^36.3.1"
+  }
+}
