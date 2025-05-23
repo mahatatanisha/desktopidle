@@ -1,1 +1,1 @@
-# newsletterAutomation
+# desktopidle
