@@ -1,0 +1,28 @@
+body {
+  margin: 0;
+  padding: 20px;
+  background: linear-gradient(to bottom right, #1e3c72, #2a5298);
+  font-family: 'Sail', cursive;
+  color: white;
+}
+
+h1 {
+  text-align: center;
+  font-size: 36px;
+}
+
+#taskContainer {
+  margin: 20px 0;
+}
+
+.task {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+input[type="text"], input[type="time"] {
+  padding: 8px;
+  border: none;
+  border-radius: 5px;
+}

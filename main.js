@@ -1,39 +1,50 @@
-const { app, BrowserWindow } = require("electron");
+const { app, BrowserWindow, ipcMain, screen } = require('electron');
+const path = require('path');
 
-let win;
-let yOffset = 0;
-let direction = 1;
-const speed = 0.5; // Smaller step size for smoother motion
+let mainWindow;
 
-function animateWindow() {
-  if (!win || win.isDestroyed()) return; // Ensure window exists before updating
+function createMainWindow() {
+  mainWindow = new BrowserWindow({
+    width: 400,
+    height: 600,
+    frame: false,
+    resizable: false,
+    transparent: true,
+    webPreferences: {
+      nodeIntegration: true,
+      contextIsolation: false
+    }
+  });
 
-  yOffset += direction * 0.5;
-
-  if (yOffset > 8 || yOffset < -8) direction *= -1;
-
-  win.setBounds({ x: 20, y: 20 + yOffset, width: 400, height: 300 });
-
-  setTimeout(animateWindow, 16);
+  mainWindow.loadFile('todo.html');
 }
 
+function createCharacterWindow(taskList, screenWidth) {
+  mainWindow.setBounds({ width: 200, height: 250, x: screenWidth - 220, y: 20 });
+  mainWindow.setResizable(false);
+  mainWindow.setAlwaysOnTop(true);
+  mainWindow.setBackgroundColor('rgba(0, 0, 0, 0)'); // Transparent
+  mainWindow.setIgnoreMouseEvents(false);
+  mainWindow.setOpacity(1);
+  mainWindow.setMenuBarVisibility(false);
+  mainWindow.loadFile('character.html');
+
+  // Send task list to renderer
+  setTimeout(() => {
+    mainWindow.webContents.send('task-list', taskList);
+  }, 500);
+}
 
 app.whenReady().then(() => {
+  const screenWidth = screen.getPrimaryDisplay().workAreaSize.width;
 
-const win = new BrowserWindow({
-  titleBarStyle: 'hidden',
-  titleBarOverlay: {
-    color: '#2f3241',
-    symbolColor: '#74b1be',
-  }
-})
-  win.loadFile("index.html");
+  createMainWindow();
 
-  setTimeout(animateWindow, 16); // Start animation loop
+  ipcMain.on('switch-to-character', (event, taskList) => {
+    createCharacterWindow(taskList, screenWidth);
+  });
 });
 
-app.on("window-all-closed", () => {
-  if (process.platform !== "darwin") {
-    app.quit();
-  }
+app.on('window-all-closed', () => {
+  app.quit();
 });
