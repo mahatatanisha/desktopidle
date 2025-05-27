@@ -20,7 +20,7 @@ function createMainWindow() {
 }
 
 function createCharacterWindow(taskList, screenWidth) {
-  mainWindow.setBounds({ width: 200, height: 250, x: screenWidth - 220, y: 20 });
+  mainWindow.setBounds({ width: 200, height: 550, x: screenWidth - 220, y: 20 });
   mainWindow.setResizable(false);
   mainWindow.setAlwaysOnTop(true);
   mainWindow.setBackgroundColor('rgba(0, 0, 0, 0)'); // Transparent
@@ -47,4 +47,11 @@ app.whenReady().then(() => {
 
 app.on('window-all-closed', () => {
   app.quit();
+});
+
+const { spawn } = require('child_process');
+const python = spawn('python', ['chat_server.py']);
+
+python.stdout.on('data', (data) => {
+  console.log(`Python: ${data}`);
 });

@@ -22,7 +22,7 @@ console.log(tasks)
 }
 
 function showTask(msg) {
-  const box = document.getElementById('dialogue');
+  const box = document.getElementById('task-text');
   box.textContent = msg;
   box.style.display = 'block';
 
@@ -33,3 +33,29 @@ function showTask(msg) {
 
 setInterval(updateClock, 1000);
 updateClock();
+
+
+function openChat() {
+  document.getElementById('chat-window').style.display = 'block';
+}
+
+function hideDialogue() {
+  document.getElementById('dialogue').style.display = 'none';
+}
+
+function sendQuestion() {
+  const question = document.getElementById('user-input').value;
+
+  fetch('http://localhost:5005/ask', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ question })
+  })
+  .then(res => res.json())
+  .then(data => {
+    const reply = data.reply || "Error: " + data.error;
+    document.getElementById('chat-log').innerHTML += `<p><b>You:</b> ${question}</p><p><b>Bot:</b> ${reply}</p>`;
+    document.getElementById('user-input').value = '';
+  });
+}
+
