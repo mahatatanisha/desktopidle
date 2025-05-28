@@ -13,22 +13,19 @@
     <div id="dialogue">
       <p id="task-text"></p>
       <p>Do you need any help?</p>
-      <button onclick="openChat()">Yes</button>
-      <button onclick="hideDialogue()">No</button>
+      <button class="dia-button" onclick="openChat()">Yes</button>
+      <button class="dia-button" onclick="hideDialogue()">No</button>
     </div>
 
-    <!-- <div class="clock" id="clock">--:--:--</div> -->
+    <div class="clock" id="clock">--:--:--</div>
 
-     <div id="chat-window" class="chat-style">
-  <h2>Ask Anything</h2>
-  <div id="chat-log"></div>
-  <input type="text" id="user-input" placeholder="Ask a question..." />
-  <button onclick="sendQuestion()">Send</button>
-</div>
+    <div id="chat-window" class="chat-style">
+      <h2>Ask Anything</h2>
+      <div id="chat-log"></div>
+      <input type="text" id="user-input" placeholder="Ask a question..." />
+      <button onclick="sendQuestion()">Send</button>
+    </div>
   </div>
-
- 
-
 
   <script src="character.js"></script>
 </body>
