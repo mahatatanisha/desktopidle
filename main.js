@@ -9,7 +9,7 @@ function createMainWindow() {
     height: 600,
     frame: false,
     resizable: false,
-    transparent: false,
+    transparent: true,
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: false
@@ -23,7 +23,7 @@ function createCharacterWindow(taskList, screenWidth) {
   mainWindow.setBounds({ width: 200, height: 220, x: screenWidth - 220, y: 20 });
   mainWindow.setResizable(true);
   mainWindow.setAlwaysOnTop(true);
-  mainWindow.setBackgroundColor('rgba(69, 111, 173, 0.73)'); // Transparent
+  mainWindow.setBackgroundColor('rgba(0, 0, 0, 0)'); // Transparent
   mainWindow.setIgnoreMouseEvents(false);
   mainWindow.setOpacity(1);
   mainWindow.setMenuBarVisibility(false);

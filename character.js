@@ -36,13 +36,13 @@ updateClock();
 
 
 function openChat() {
-  document.getElementById('chat-window').style.display = 'block';
+  document.querySelector('.chat-style').style.display = 'block';
   document.querySelector(".character").style.display = "none"; // Hide character
-  document.getElementById("dialogue").style.display = "none"; 
+  document.querySelector(".dialogue").style.display = "none"; 
 }
 
 function hideDialogue() {
-  document.getElementById('dialogue').style.display = 'none';
+  document.querySelector(".dialogue").style.display = 'none';
 }
 
 function sendQuestion() {

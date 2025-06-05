@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from Flask import Flask, request, jsonify # pyright: ignore[reportMissingImports]
 import openai
 import os
 from dotenv import load_dotenv
@@ -18,7 +18,7 @@ app = Flask(__name__)
 def ask():
     data = request.json
     user_input = data.get('question', '')
-
+    print('user input: ',user_input)
     try:
         response = openai.ChatCompletion.create(
             model="gpt-3.5-turbo",  # or gpt-4
