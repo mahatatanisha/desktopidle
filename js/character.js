@@ -36,9 +36,10 @@ updateClock();
 
 
 function openChat() {
-  document.querySelector('.chat-style').style.display = 'block';
   document.querySelector(".character").style.display = "none"; // Hide character
-  document.querySelector(".dialogue").style.display = "none"; 
+  document.querySelector(".dialogue").style.display = "none";
+
+   ipcRenderer.send('switch-to-chat');
 }
 
 function hideDialogue() {
