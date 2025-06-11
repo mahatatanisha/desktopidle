@@ -46,19 +46,5 @@ function hideDialogue() {
   document.querySelector(".dialogue").style.display = 'none';
 }
 
-function sendQuestion() {
-  const question = document.getElementById('user-input').value;
 
-  fetch('http://localhost:5005/ask', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ question })
-  })
-  .then(res => res.json())
-  .then(data => {
-    const reply = data.reply || "Error: " + data.error;
-    document.getElementById('chat-log').innerHTML += `<p><b>You:</b> ${question}</p><p><b>Bot:</b> ${reply}</p>`;
-    document.getElementById('user-input').value = '';
-  });
-}
 

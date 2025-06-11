@@ -20,7 +20,7 @@ function createMainWindow() {
 }
 
 function createCharacterWindow(taskList, screenWidth) {
-  mainWindow.setBounds({ width: 200, height: 220, x: screenWidth - 220, y: 20 });
+  mainWindow.setBounds({ width: 200, height: 420, x: screenWidth - 220, y: 20 });
   mainWindow.setResizable(true);
   mainWindow.setAlwaysOnTop(true);
   mainWindow.setBackgroundColor('rgba(0, 0, 0, 0)'); // Transparent
@@ -36,9 +36,10 @@ function createCharacterWindow(taskList, screenWidth) {
 }
 
 function creatChatWindow(screenWidth){
-  mainWindow.setBounds({ width: 500, height: 400, x: screenWidth - 220, y: 20  });
+  mainWindow.setBounds({ width: 300, height: 540, x: screenWidth - 300, y: 170  });
    mainWindow.setResizable(true);
-  mainWindow.setAlwaysOnTop(true);
+  // mainWindow.setAlwaysOnTop(true);
+  // mainWindow.setAlwaysOnBottom(true);
   mainWindow.setBackgroundColor('rgba(220, 17, 17, 0.85)'); // Transparent
   mainWindow.setIgnoreMouseEvents(false);
   mainWindow.setOpacity(1);
