@@ -1,18 +1,16 @@
 from flask import Flask, request, jsonify 
-import openai
 import os
 from dotenv import load_dotenv
-import ssl
-import certifi
+import requests
 
 # Load environment variables from .env file
 load_dotenv()
 
 # Get the API key
-openai_api_key = os.getenv("OPENAI_API_KEY")
+openrouter_api_key = os.getenv("OPENAI_API_KEY")
 
 # Use the API key in your code
-openai.api_key = openai_api_key
+
 
 app = Flask(__name__)
 
@@ -22,15 +20,23 @@ def ask():
         return jsonify({'error': "Invalid Content-Type. Use 'application/json'."}), 415
 
     data = request.get_json()
+      # Debugging line to see incoming data
     user_input = data.get('question', '')
+    
+    headers = {
+        "Authorization": f"Bearer {openrouter_api_key}",
+        "Content-Type": "application/json"
+    }
+
+    payload = {
+        "model": "mistralai/magistral-small-2506",  # Adjust model name based on availability
+        "messages": [{"role": "user", "content": user_input}]
+    }
 
     try:
-        response = openai.ChatCompletion.create(
-            model="gpt-4o",
-            messages=[{"role": "user", "content": user_input}],
-            
-        )
-        reply = response.choices[0].message.content  # ✅ Updated format
+        response = requests.post("https://openrouter.ai/api/v1/chat/completions", json=payload, headers=headers)
+        response_json = response.json()
+        reply = response_json["choices"][0]["message"]["content"].strip()  # ✅ Updated format
         return jsonify({'reply': reply})
     except Exception as e:
         return jsonify({'error': str(e)})

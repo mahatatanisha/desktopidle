@@ -27,15 +27,19 @@
   <script>
     function sendQuestion() {
   const question = document.querySelector('.user-input').value;
-  console.log(question);
+  
   fetch('http://localhost:5005/ask', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ question })
   })
-  .then(res => res.json())
+  .then(res => {
+    console.log("Response received:", res);
+    return res.json(); // Return the parsed JSON
+})
   .then(data => {
-    const reply = data.reply || "Error: hey " + data.error;
+    console.log("Parsed JSON response:", data);
+    const reply = data.reply || "Error: " + data.error;
     document.getElementById('chat-log').innerHTML += `<p><b>You:</b> ${question}</p><p><b>Bot:</b> ${reply}</p>`;
     document.querySelector('.user-input').value = '';
   });
