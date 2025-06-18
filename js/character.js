@@ -10,7 +10,7 @@ ipcRenderer.on('task-list', (event, receivedTasks) => {
 function updateClock() {
   const now = new Date();
   document.getElementById('clock').textContent = now.toLocaleTimeString();
-console.log(tasks)
+  console.log(tasks)
   const currentTime = now.toTimeString().substring(0, 5); // HH:MM
 
   tasks.forEach(task => {
