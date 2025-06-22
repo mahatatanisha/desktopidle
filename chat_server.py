@@ -30,16 +30,25 @@ def ask():
 
     payload = {
         "model": "mistralai/magistral-small-2506",  # Adjust model name based on availability
-        "messages": [{"role": "user", "content": user_input}]
+        "messages": [
+            {"role": "system", "content": "Respond concisely. One-line answers only."},
+            {"role": "user", "content": user_input}],
+        "max_tokens": 1000 
     }
 
     try:
         response = requests.post("https://openrouter.ai/api/v1/chat/completions", json=payload, headers=headers)
         response_json = response.json()
-        reply = response_json["choices"][0]["message"]["content"].strip()  # ✅ Updated format
+
+        if "choices" not in response_json:
+            return jsonify({'error': "API response does not contain 'choices'.", 'details': response_json})
+            
+
+        reply = response_json["choices"][0]["message"]["content"].strip()
         return jsonify({'reply': reply})
     except Exception as e:
         return jsonify({'error': str(e)})
+
 
 
 if __name__ == '__main__':
