@@ -7,6 +7,11 @@ ipcRenderer.on('task-list', (event, receivedTasks) => {
   
 });
 
+function goHome() {
+  ipcRenderer.send('switch-to-todo');
+}
+
+
 function updateClock() {
   const now = new Date();
   document.getElementById('clock').textContent = now.toLocaleTimeString();
@@ -39,7 +44,7 @@ function openChat() {
   document.querySelector(".character").style.display = "none"; // Hide character
   document.querySelector(".dialogue").style.display = "none";
 
-   ipcRenderer.send('switch-to-chat');
+   ipcRenderer.send('switch-to-chat',tasks);
 }
 
 function hideDialogue() {

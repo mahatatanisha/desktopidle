@@ -22,7 +22,8 @@ def ask():
     data = request.get_json()
       # Debugging line to see incoming data
     user_input = data.get('question', '')
-    
+    tasks = data.get('tasks', [])
+
     headers = {
         "Authorization": f"Bearer {openrouter_api_key}",
         "Content-Type": "application/json"

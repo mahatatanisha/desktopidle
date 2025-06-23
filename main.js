@@ -35,16 +35,18 @@ function createCharacterWindow(taskList, screenWidth) {
   }, 500);
 }
 
-function creatChatWindow(screenWidth){
+function creatChatWindow(screenWidth, tasks){
   mainWindow.setBounds({ width: 300, height: 540, x: screenWidth - 300, y: 170  });
    mainWindow.setResizable(true);
   // mainWindow.setAlwaysOnTop(true);
   // mainWindow.setAlwaysOnBottom(true);
-  mainWindow.setBackgroundColor('rgba(220, 17, 17, 0.85)'); // Transparent
+  mainWindow.setBackgroundColor('rgba(220, 17, 17, 0)'); // Transparent
   mainWindow.setIgnoreMouseEvents(false);
   mainWindow.setOpacity(1);
-  mainWindow.setMenuBarVisibility(true);
   mainWindow.loadFile('templates/chatWindow.html');
+  setTimeout(() => {
+    mainWindow.webContents.send('task-list', tasks);
+  }, 500);
 }
 
 app.whenReady().then(() => {
@@ -53,12 +55,23 @@ app.whenReady().then(() => {
   createMainWindow();
 
   ipcMain.on('switch-to-character', (event, taskList) => {
+ 
     createCharacterWindow(taskList, screenWidth);
   });
-  ipcMain.on('switch-to-chat', (event) => {
-    creatChatWindow(screenWidth);
+  ipcMain.on('switch-to-chat', (event, tasks) => {
+    creatChatWindow(screenWidth, tasks);
   });
 });
+
+ipcMain.on('switch-to-todo', () => {
+  if (mainWindow) {
+    mainWindow.close();
+    mainWindow = null; // Optional: helps prevent reuse of stale window reference
+  }
+  createMainWindow();
+});
+
+
 
 app.on('window-all-closed', () => {
   app.quit();

@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <button class="back-button" onclick="goCharacter()">back</button>
   <title>Chat window</title>
   <!-- <link rel="stylesheet" href="..\style\character.css"> -->
 </head>
@@ -22,16 +23,29 @@
       color: white;
       padding: 10px;
       font-family: 'Sail', cursive;
+      /* -webkit-app-region: drag;  Makes whole window draggable */
+    }
+
+    .back-button{
+      top: 10px;
+      right: 10px;
     }
   </style>
   <script>
+    const { ipcRenderer } = require('electron');
+
+    ipcRenderer.on('task-list', (event, receivedTasks) => {
+  tasks = receivedTasks;
+  
+});
+
     function sendQuestion() {
   const question = document.querySelector('.user-input').value;
   
   fetch('http://localhost:5005/ask', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ question })
+   body: JSON.stringify({ "question": question, "tasks": tasks })
   })
   .then(res => {
     console.log("Response received:", res);
@@ -43,6 +57,11 @@
     document.getElementById('chat-log').innerHTML += `<p><b>You:</b> ${question}</p><p><b>Bot:</b> ${reply}</p>`;
     document.querySelector('.user-input').value = '';
   });
+}
+
+function goCharacter() {
+  ipcRenderer.send('switch-to-todo');
+
 }
   </script>
 </body>
