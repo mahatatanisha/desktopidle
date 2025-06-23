@@ -1,9 +1,17 @@
+@import url('https://fonts.googleapis.com/css2?family=Carter+One&display=swap');
+
 body {
   margin: 0;
   padding: 20px;
-  background: linear-gradient(to bottom right, #1e3c72, #2a5298);
+  /* background: linear-gradient(to bottom right, #1e3c72, #2a5298); */
   font-family: 'Sail', cursive;
-  color: white;
+  color: rgb(2,48,89);
+  background-image: url("../images/bg.gif"); /* Update this path to your actual gif location */
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-position: center;
+
 }
 
 h1 {
@@ -13,6 +21,21 @@ h1 {
 
 #taskContainer {
   margin: 20px 0;
+}
+
+button {
+  background: rgb(223,90,0);
+  width: 6rem;
+  border-radius: 1rem;
+  color: white;
+  font-size: 16px;
+  margin-top: 10px;
+  border: none;
+  padding: 5px;
+  cursor: pointer;
+  font-family: "Carter One", system-ui;
+  font-weight: 400;
+  font-style: normal;
 }
 
 .task {
