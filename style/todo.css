@@ -4,13 +4,16 @@ body {
   margin: 0;
   padding: 20px;
   /* background: linear-gradient(to bottom right, #1e3c72, #2a5298); */
-  font-family: 'Sail', cursive;
+  font-family: "Carter One", system-ui;
+  font-weight: 400;
+  font-style: normal;
   color: rgb(2,48,89);
   background-image: url("../images/bg.gif"); /* Update this path to your actual gif location */
   background-size: cover;
   background-repeat: no-repeat;
   background-attachment: fixed;
   background-position: center;
+
 
 }
 
@@ -48,4 +51,23 @@ input[type="text"], input[type="time"] {
   padding: 8px;
   border: none;
   border-radius: 5px;
+}
+
+.delete-btn {
+  background: none;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+  color: red;
+}
+
+#saved{
+  display: none;
+  color: rgb(223,90,0);
+  font-family: "Carter One", system-ui;
+  font-weight: 200;
+  font-style: normal;
+  font-size: 10px;
+  align-self: center;
+
 }
