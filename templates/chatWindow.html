@@ -3,66 +3,219 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <button class="back-button" onclick="goCharacter()">back</button>
   <title>Chat window</title>
   <!-- <link rel="stylesheet" href="..\style\character.css"> -->
 </head>
 
 <body>
+  <button class="back-button" onclick="goCharacter()">back</button>
+  <h2>Ask Me Anything</h2>
+  <div id="chat-log"></div>
+  <div class="footer">
+    <input type="text" class="user-input" placeholder="Ask a question..." />
+    <button onclick="sendQuestion()">Send</button>
+  </div>
 
-  <h2>Ask Anything</h2>
-  <div id="chat-log">Hey ask me anything</div>
-  <input type="text" class="user-input" placeholder="Ask a question..." />
-  <button onclick="sendQuestion()">Send</button>
 
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Carter+One&display=swap');
+
+    h2{
+      color: rgb(2,48,89);
+      font-family: "Carter One", system-ui;
+      font-weight: 400;
+      font-style: normal;
+      font-size: medium;
+      text-align: center;
+    }
+
     body {
       display: block;
       position: relative;
-      background: linear-gradient(to bottom right, #0f2027, #203a43, #2c5364);
+      background-image: url("../images/Underwater Wallpaper.jpg");
+      /* Update this path to your actual gif location */
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+      background-position: center;
       color: white;
       padding: 10px;
       font-family: 'Sail', cursive;
       /* -webkit-app-region: drag;  Makes whole window draggable */
     }
 
-    .back-button{
+    .back-button {
       top: 10px;
       right: 10px;
     }
+
+    .footer {
+      display: flex;
+      justify-content: space-between;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgb(2,48,89);
+      padding: 10px;
+    }
+
+    button {
+      background: rgb(223,90,0);
+      width: 3rem;
+      border-radius: 1rem;
+      color: white;
+      font-size: 10px;
+      border: none;
+      padding: 5px;
+      cursor: pointer;
+      font-family: "Carter One", system-ui;
+      font-weight: 400;
+      font-style: normal;
+    }
+
+    .user-input{
+      width: 80%;
+      border-radius: 0.3rem;
+      padding: 5px;
+      border: none;
+    }
+
+    #chat-log {
+      padding-bottom: 70px; /* Space for footer */
+      max-height: calc(100vh - 120px);
+      overflow-y: auto;
+    }
+
+    /* Chat message styling */
+    .message {
+      margin: 10px 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .user-message {
+      align-items: flex-end;
+    }
+
+    .bot-message {
+      align-items: flex-start;
+    }
+
+    .message-bubble {
+      max-width: 70%;
+      padding: 10px 15px;
+      border-radius: 18px;
+      margin: 5px;
+      word-wrap: break-word;
+    }
+
+    .user-bubble {
+      background-color: rgb(63,126,166);
+      color: white;
+      border-bottom-right-radius: 5px;
+    }
+
+    .bot-bubble {
+      background-color: rgb(169,169,169);
+      color: black;
+      border-bottom-left-radius: 5px;
+    }
+
+    .message-label {
+      font-weight: bold;
+      font-size: 12px;
+      margin: 0 15px 5px 15px;
+      opacity: 0.8;
+      color: rgb(255,149,40);
+    }
+
+    /* Hide scrollbar for Chrome, Safari and Opera */
+#chat-log::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+#chat-log {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;     /* Firefox */
+}
+
+
+
+
+
   </style>
   <script>
     const { ipcRenderer } = require('electron');
+    let tasks = [];
 
     ipcRenderer.on('task-list', (event, receivedTasks) => {
-  tasks = receivedTasks;
-  
-});
+      tasks = receivedTasks;
+    });
 
     function sendQuestion() {
-  const question = document.querySelector('.user-input').value;
-  
-  fetch('http://localhost:5005/ask', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-   body: JSON.stringify({ "question": question, "tasks": tasks })
-  })
-  .then(res => {
-    console.log("Response received:", res);
-    return res.json(); // Return the parsed JSON
-})
-  .then(data => {
-    console.log("Parsed JSON response:", data);
-    const reply = data.reply || "Error: " + data.error;
-    document.getElementById('chat-log').innerHTML += `<p><b>You:</b> ${question}</p><p><b>Bot:</b> ${reply}</p>`;
-    document.querySelector('.user-input').value = '';
-  });
-}
+      const question = document.querySelector('.user-input').value;
+      if (!question.trim()) return;
 
-function goCharacter() {
-  ipcRenderer.send('switch-to-todo');
+      // Add user message to chat
+      addMessage(question, 'user');
+      document.querySelector('.user-input').value = '';
 
-}
+      fetch('http://localhost:5005/ask', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ "question": question, "tasks": tasks })
+      })
+        .then(res => {
+          console.log("Response received:", res);
+          return res.json();
+        })
+        .then(data => {
+          console.log("Parsed JSON response:", data);
+          const reply = data.reply || "Error: " + data.error;
+          addMessage(reply, 'bot');
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          addMessage('Sorry, there was an error processing your request.', 'bot');
+        });
+    }
+
+    function addMessage(text, sender) {
+      const chatLog = document.getElementById('chat-log');
+      const messageDiv = document.createElement('div');
+      messageDiv.className = `message ${sender}-message`;
+      
+      const label = document.createElement('div');
+      label.className = 'message-label';
+      label.textContent = sender === 'user' ? 'You:' : 'Bot:';
+      
+      const bubble = document.createElement('div');
+      bubble.className = `message-bubble ${sender}-bubble`;
+      bubble.textContent = text;
+      
+      messageDiv.appendChild(label);
+      messageDiv.appendChild(bubble);
+      chatLog.appendChild(messageDiv);
+      
+      // Scroll to bottom
+      chatLog.scrollTop = chatLog.scrollHeight;
+    }
+
+    // Allow sending message with Enter key
+    document.addEventListener('DOMContentLoaded', function() {
+      const input = document.querySelector('.user-input');
+      input.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+          sendQuestion();
+        }
+      });
+    });
+
+    function goCharacter() {
+      ipcRenderer.send('switch-to-todo');
+    }
   </script>
 </body>
 

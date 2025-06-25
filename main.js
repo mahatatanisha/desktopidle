@@ -36,7 +36,7 @@ function createCharacterWindow(taskList, screenWidth) {
 }
 
 function creatChatWindow(screenWidth, tasks){
-  mainWindow.setBounds({ width: 300, height: 540, x: screenWidth - 300, y: 170  });
+  mainWindow.setBounds({ width: 300, height: 540, x: screenWidth - 300, y: 130  });
    mainWindow.setResizable(true);
   // mainWindow.setAlwaysOnTop(true);
   // mainWindow.setAlwaysOnBottom(true);
