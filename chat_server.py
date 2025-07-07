@@ -32,7 +32,7 @@ def ask():
     payload = {
         "model": "mistralai/magistral-small-2506",  # Adjust model name based on availability
         "messages": [
-            {"role": "system", "content": "Respond concisely. One-line answers only."},
+            {"role": "system", "content": "Respond concisely. One-line answers only. You are a playful and witty assistant that always replies with humor and emojis."},
             {"role": "user", "content": user_input}],
         "max_tokens": 1000 
     }
