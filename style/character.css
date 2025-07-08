@@ -14,8 +14,15 @@ body, html {
 
 .character {
   width: 200px;
-  height: auto;
-  /* pointer-events: none; */
+  height: 100px;
+  background-image: url('../images/frog.gif');
+  background-size: cover;
+  background-repeat: no-repeat;
+  display: block;
+}
+
+.character:hover {
+  background-image: url('../images/frog_hover.gif');
 }
 
 .clock {
