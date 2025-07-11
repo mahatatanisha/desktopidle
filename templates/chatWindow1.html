@@ -1,0 +1,268 @@
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chat window</title>
+  <!-- <link rel="stylesheet" href="..\style\character.css"> -->
+</head>
+
+<body>
+  <button class="back-button" onclick="goCharacter()">back</button>
+  <h2>Ask Me Anything</h2>
+  <div id="chat-log"></div>
+  <div class="footer">
+    <input type="text" class="user-input" placeholder="Ask a question..." />
+    <button onclick="sendQuestion()">Send</button>
+  </div>
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Carter+One&display=swap');
+
+    h2{
+      color: rgb(2,48,89);
+      font-family: "Carter One", system-ui;
+      font-weight: 400;
+      font-style: normal;
+      font-size: medium;
+      text-align: center;
+    }
+
+    body {
+      display: block;
+      position: relative;
+      background-image: url("../images/Underwater Wallpaper.jpg");
+      /* Update this path to your actual gif location */
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+      background-position: center;
+      color: white;
+      padding: 10px;
+      font-family: 'Sail', cursive;
+      /* -webkit-app-region: drag;  Makes whole window draggable */
+    }
+
+    .back-button {
+      top: 10px;
+      right: 10px;
+    }
+
+    .footer {
+      display: flex;
+      justify-content: space-between;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgb(2,48,89);
+      padding: 10px;
+    }
+
+    button {
+      background: rgb(223,90,0);
+      width: 3rem;
+      border-radius: 1rem;
+      color: white;
+      font-size: 10px;
+      border: none;
+      padding: 5px;
+      cursor: pointer;
+      font-family: "Carter One", system-ui;
+      font-weight: 400;
+      font-style: normal;
+    }
+
+    .user-input{
+      width: 80%;
+      border-radius: 0.3rem;
+      padding: 5px;
+      border: none;
+    }
+
+    #chat-log {
+      padding-bottom: 70px; /* Space for footer */
+      max-height: calc(100vh - 120px);
+      overflow-y: auto;
+    }
+
+    /* Chat message styling */
+    .message {
+      margin: 10px 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .user-message {
+      align-items: flex-end;
+      font-size: small;
+    }
+
+    .bot-message {
+      align-items: flex-start;
+      font-size: small;
+
+    }
+
+    .message-bubble {
+      max-width: 70%;
+      padding: 10px 15px;
+      border-radius: 18px;
+      margin: 5px;
+      word-wrap: break-word;
+      white-space: pre-wrap; /* Preserve line breaks */
+    }
+
+    .user-bubble {
+      background-color: rgb(63,126,166);
+      color: white;
+      border-bottom-right-radius: 5px;
+    }
+
+    .bot-bubble {
+      background-color: rgb(2,48,89);
+      color: white;
+      border-bottom-left-radius: 5px;
+    }
+
+    .message-label {
+      font-weight: bold;
+      font-size: 12px;
+      margin: 0 15px 5px 15px;
+      opacity: 0.8;
+      color: rgb(2,48,89);
+    }
+
+    /* Hide scrollbar for Chrome, Safari and Opera */
+    #chat-log::-webkit-scrollbar {
+      display: none;
+    }
+
+    /* Hide scrollbar for IE, Edge and Firefox */
+    #chat-log {
+      -ms-overflow-style: none;  /* IE and Edge */
+      scrollbar-width: none;     /* Firefox */
+    }
+  </style>
+  
+  <script>
+    const { ipcRenderer } = require('electron');
+    let tasks = [];
+    let sessionId = 'session_' + Date.now(); // Generate unique session ID
+    let isInitialized = false;
+
+    ipcRenderer.on('task-list', (event, receivedTasks) => {
+      tasks = receivedTasks;
+      // Send initial message when tasks are received
+      if (!isInitialized) {
+        sendInitialMessage();
+        isInitialized = true;
+      }
+    });
+
+    function sendInitialMessage() {
+      // Send initial request to get bot's greeting message
+      fetch('http://localhost:5005/ask', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          "question": "start", 
+          "tasks": tasks, 
+          "session_id": sessionId 
+        })
+      })
+      .then(res => res.json())
+      .then(data => {
+        const reply = data.reply || "Error: " + data.error;
+        addMessage(reply, 'bot');
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        addMessage('Sorry, there was an error starting the conversation.', 'bot');
+      });
+    }
+
+    function sendQuestion() {
+      const question = document.querySelector('.user-input').value;
+      if (!question.trim()) return;
+
+      // Add user message to chat
+      addMessage(question, 'user');
+      document.querySelector('.user-input').value = '';
+
+      fetch('http://localhost:5005/ask', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          "question": question, 
+          "tasks": tasks, 
+          "session_id": sessionId 
+        })
+      })
+      .then(res => {
+        console.log("Response received:", res);
+        return res.json();
+      })
+      .then(data => {
+        console.log("Parsed JSON response:", data);
+        const reply = data.reply || "Error: " + data.error;
+        addMessage(reply, 'bot');
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        addMessage('Sorry, there was an error processing your request.', 'bot');
+      });
+    }
+
+    function addMessage(text, sender) {
+      const chatLog = document.getElementById('chat-log');
+      const messageDiv = document.createElement('div');
+      messageDiv.className = `message ${sender}-message`;
+      
+      const label = document.createElement('div');
+      label.className = 'message-label';
+      label.textContent = sender === 'user' ? 'You:' : 'Bot:';
+      
+      const bubble = document.createElement('div');
+      bubble.className = `message-bubble ${sender}-bubble`;
+      bubble.textContent = text;
+      
+      messageDiv.appendChild(label);
+      messageDiv.appendChild(bubble);
+      chatLog.appendChild(messageDiv);
+      
+      // Scroll to bottom
+      chatLog.scrollTop = chatLog.scrollHeight;
+    }
+
+    // Allow sending message with Enter key
+    document.addEventListener('DOMContentLoaded', function() {
+      const input = document.querySelector('.user-input');
+      input.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+          sendQuestion();
+        }
+      });
+
+      // If tasks are already available, send initial message
+      if (tasks.length > 0 && !isInitialized) {
+        sendInitialMessage();
+        isInitialized = true;
+      }
+    });
+
+    function goCharacter() {
+      // Reset conversation when going back
+      fetch('http://localhost:5005/reset', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ "session_id": sessionId })
+      })
+      .then(() => {
+        ipcRenderer.send('switch-to-todo');
+      });
+    }
+  </script>
+</body>
+
+</html>

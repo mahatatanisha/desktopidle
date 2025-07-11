@@ -43,7 +43,7 @@ function creatChatWindow(screenWidth, tasks){
   mainWindow.setBackgroundColor('rgba(220, 17, 17, 0)'); // Transparent
   mainWindow.setIgnoreMouseEvents(false);
   mainWindow.setOpacity(1);
-  mainWindow.loadFile('templates/chatWindow.html');
+  mainWindow.loadFile('templates/chatWindow1.html');
   setTimeout(() => {
     mainWindow.webContents.send('task-list', tasks);
   }, 500);
@@ -78,7 +78,7 @@ app.on('window-all-closed', () => {
 });
 
 const { spawn } = require('child_process');
-const python = spawn('python', ['chat_server.py']);
+const python = spawn('python', ['chat_server1.py']);
 
 python.stdout.on('data', (data) => {
   console.log(`Python: ${data}`);
